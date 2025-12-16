@@ -105,9 +105,72 @@ public class TableFileReaderCsvImplTest {
             for (Weather weather : weatherReader) {
                 actual.add(weather);
             }
-        }
 
-        assertEquals(expected, actual);
+            assertEquals(expected, actual);
+        }
+    }
+
+    // ==================== Edge Case Tests ====================
+
+    @Test
+    @SneakyThrows
+    @DisplayName("Should return empty list for CSV with only header")
+    void shouldReturnEmptyListForHeaderOnly() {
+
+        Path filePath = Path.of(Objects.requireNonNull(getClass().getResource("/csv/weather-empty.csv")).toURI());
+        BufferedReader bufferedReader = Files.newBufferedReader(filePath);
+
+        try (TableFileReader<Weather> weatherReader = tableFileReaderFactory.create(
+                bufferedReader,
+                FileType.CSV,
+                Weather.class
+        )) {
+            List<Weather> result = weatherReader.stream().toList();
+
+            assertTrue(result.isEmpty());
+        }
+    }
+
+    @Test
+    @SneakyThrows
+    @DisplayName("Should handle CSV with extra whitespace")
+    void shouldHandleCsvWithExtraWhitespace() {
+
+        List<Weather> expected = TestDaten.createWeatherList();
+
+        Path filePath = Path.of(Objects.requireNonNull(getClass().getResource("/csv/weather-space.csv")).toURI());
+        BufferedReader bufferedReader = Files.newBufferedReader(filePath);
+
+        try (TableFileReader<Weather> weatherReader = tableFileReaderFactory.create(
+                bufferedReader,
+                FileType.CSV,
+                Weather.class
+        )) {
+            List<Weather> actual = weatherReader.stream().toList();
+
+            assertEquals(expected, actual);
+        }
+    }
+
+    @Test
+    @SneakyThrows
+    @DisplayName("Should handle CSV with changed columns")
+    void shouldHandleCsvWithChangedColumns() {
+
+        List<Weather> expected = TestDaten.createWeatherList();
+
+        Path filePath = Path.of(Objects.requireNonNull(getClass().getResource("/csv/weather-changecols.csv")).toURI());
+        BufferedReader bufferedReader = Files.newBufferedReader(filePath);
+
+        try (TableFileReader<Weather> weatherReader = tableFileReaderFactory.create(
+                bufferedReader,
+                FileType.CSV,
+                Weather.class
+        )) {
+            List<Weather> actual = weatherReader.stream().toList();
+
+            assertEquals(expected, actual);
+        }
     }
 
 }

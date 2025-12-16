@@ -30,9 +30,6 @@ public class Weather {
     @CsvBindByName(column = "1HrP TPcpn")
     private Double oneHourPrecipitation;
 
-    @CsvBindByName(column = "TPcpn")
-    private Double totalPrecipitation;
-
     @CsvBindByName(column = "PDir")
     private Integer prevailingWindDirection;
 
