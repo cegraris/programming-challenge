@@ -2,8 +2,6 @@ package de.exxcellent.challenge.reader.service;
 
 import de.exxcellent.challenge.reader.model.FileType;
 
-import java.io.Reader;
-
 /**
  * Factory interface for creating {@link TableFileReader} instances.
  * <p>
@@ -14,5 +12,5 @@ import java.io.Reader;
  * @see TableFileReader
  */
 public interface TableFileReaderFactory {
-    <T> TableFileReader<T> create(Reader reader, FileType type, Class<T> clazz);
+    <T> TableFileReader<T> create(String filepath, FileType type, Class<T> clazz);
 }

@@ -1,11 +1,9 @@
 package de.exxcellent.challenge.reader.service;
 
+import de.exxcellent.challenge.exception.AppException;
 import lombok.NonNull;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Spliterators;
+import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -24,6 +22,11 @@ public interface TableFileReader<T> extends AutoCloseable, Iterable<T> {
      * Reads the next row.
      */
     Optional<T> read() throws Exception;
+
+    /**
+     * Get the List of {@link de.exxcellent.challenge.exception.AppException}, which are thrown by parsing the mismatch rows.
+     */
+    List<AppException> getFailedRowsExceptions();
 
     /**
      * A single-pass iterator view over {@link #read()}.
