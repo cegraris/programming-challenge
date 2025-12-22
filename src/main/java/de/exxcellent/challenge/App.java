@@ -2,6 +2,8 @@ package de.exxcellent.challenge;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.Locale;
+
 /**
  * The entry class for your solution. This class is only aimed as starting point and not intended as baseline for your software
  * design. Read: create your own classes and packages as appropriate.
@@ -18,6 +20,7 @@ public class App {
     public static void main(String... args) {
 
         // Your preparation code …
+        Locale.setDefault(Locale.ENGLISH);
 
         String dayWithSmallestTempSpread = "Someday";     // Your day analysis function call …
         System.out.printf("Day with smallest temperature spread : %s%n", dayWithSmallestTempSpread);

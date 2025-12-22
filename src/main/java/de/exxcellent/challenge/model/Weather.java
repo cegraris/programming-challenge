@@ -12,13 +12,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Weather {
-    @CsvBindByName(column = "Day")
+    @CsvBindByName(column = "Day", required = true)
     private Integer day;
 
-    @CsvBindByName(column = "MxT")
+    @CsvBindByName(column = "MxT", required = true)
     private Integer maxTemperature;
 
-    @CsvBindByName(column = "MnT")
+    @CsvBindByName(column = "MnT", required = true)
     private Integer minTemperature;
 
     @CsvBindByName(column = "AvT")
