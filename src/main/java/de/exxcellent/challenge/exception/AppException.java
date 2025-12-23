@@ -59,6 +59,17 @@ public class AppException extends RuntimeException {
         );
     }
 
+    /**
+     * Failed to close a file after reading.
+     */
+    public static AppException fileCloseFailure(Throwable cause) {
+        return new AppException(
+                ErrorCode.FILE_CLOSE_FAILURE,
+                "Failed to close file. The file may remain open or locked.",
+                cause
+        );
+    }
+
     // ========== File Content Errors ==========
 
     /**
@@ -93,6 +104,19 @@ public class AppException extends RuntimeException {
                 ErrorCode.ANALYSIS_FAILED,
                 String.format("Analysis failed: %s", reason),
                 null
+        );
+    }
+
+    // ========== Unexpected Errors ==========
+
+    /**
+     * Unexpected error that doesn't fit into known categories.
+     */
+    public static AppException unexpected(String message, Throwable cause) {
+        return new AppException(
+                ErrorCode.UNEXPECTED_ERROR,
+                String.format("Unexpected error: %s", message),
+                cause
         );
     }
 }

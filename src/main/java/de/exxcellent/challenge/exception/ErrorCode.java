@@ -29,6 +29,10 @@ public enum ErrorCode {
      * File exists but cannot be read (permission, encoding, is directory, etc.)
      */
     FILE_NOT_READABLE(2),
+    /**
+     * Failed to close the file
+     */
+    FILE_CLOSE_FAILURE(2),
 
     // ===== File Content Errors (exit code 3) =====
     /**
@@ -44,7 +48,13 @@ public enum ErrorCode {
     /**
      * Analysis cannot be completed (invalid range, no valid data after filtering, duplicate key values etc.)
      */
-    ANALYSIS_FAILED(4);
+    ANALYSIS_FAILED(4),
+
+    // ===== Unexpected Errors (exit code 99) =====
+    /**
+     * Unexpected error that doesn't fit into known categories.
+     */
+    UNEXPECTED_ERROR(99);
 
     private final int exitCode;
 }

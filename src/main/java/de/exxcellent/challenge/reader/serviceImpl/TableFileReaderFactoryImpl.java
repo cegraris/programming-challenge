@@ -5,8 +5,6 @@ import de.exxcellent.challenge.reader.service.TableFileReader;
 import de.exxcellent.challenge.reader.service.TableFileReaderFactory;
 import org.springframework.stereotype.Component;
 
-import java.io.Reader;
-
 /**
  * Default implementation of {@link TableFileReaderFactory}.
  * <p>
@@ -18,9 +16,9 @@ import java.io.Reader;
 public class TableFileReaderFactoryImpl implements TableFileReaderFactory {
 
     @Override
-    public <T> TableFileReader<T> create(Reader reader, FileType type, Class<T> clazz) {
+    public <T> TableFileReader<T> create(String filepath, FileType type, Class<T> clazz) {
         return switch (type) {
-            case CSV -> new TableFileReaderCsvImpl<>(reader, clazz);
+            case CSV -> new TableFileReaderCsvImpl<>(filepath, clazz);
         };
     }
 

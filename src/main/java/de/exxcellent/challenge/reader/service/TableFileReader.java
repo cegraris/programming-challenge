@@ -20,17 +20,29 @@ public interface TableFileReader<T> extends AutoCloseable, Iterable<T> {
 
     /**
      * Reads the next row.
+     *
+     * @return an {@link Optional} containing the next legal mapped row, the mismatch rows will be skipped
+     * @throws AppException if an unrecoverable error occurs
      */
-    Optional<T> read() throws Exception;
+    Optional<T> read();
 
     /**
-     * Get the List of {@link de.exxcellent.challenge.exception.AppException}, which are thrown by parsing the mismatch rows.
+     * Indicates whether one or more rows failed to be read or mapped
+     *
+     * @return {@code true} if any error occurred
+     * {@code false} otherwise
+     */
+    boolean hasFailedRowsExceptions();
+
+    /**
+     * Get the List of {@link AppException}, which were thrown by parsing the mismatch rows.
+     *
+     * @return List of {@link AppException}
      */
     List<AppException> getFailedRowsExceptions();
 
     /**
      * A single-pass iterator view over {@link #read()}.
-     * Note: Iterator cannot throw checked exceptions, so we wrap them in RuntimeException.
      */
     @Override
     default @NonNull Iterator<T> iterator() {
@@ -38,11 +50,7 @@ public interface TableFileReader<T> extends AutoCloseable, Iterable<T> {
             Optional<T> next = fetch();
 
             private Optional<T> fetch() {
-                try {
-                    return TableFileReader.this.read();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+                return TableFileReader.this.read();
             }
 
             @Override
@@ -71,12 +79,17 @@ public interface TableFileReader<T> extends AutoCloseable, Iterable<T> {
         return s.onClose(() -> {
             try {
                 close();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            } catch (AppException e) {
+                throw AppException.fileCloseFailure(e);
             }
         });
     }
 
+    /**
+     * Closes this reader and releases any underlying resources.
+     * Throws {@link AppException} if an I/O error occurs while closing.
+     */
     @Override
-    void close() throws Exception;
+    void close();
+
 }
