@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Unit-Test für die Klasse {@link TableFileReaderCsvImpl}.
  */
 @SpringBootTest(classes = App.class)
-public class TableFileReaderCsvImplTest {
+class TableFileReaderCsvImplTest {
 
     @Autowired
     private TableFileReaderFactory tableFileReaderFactory;
