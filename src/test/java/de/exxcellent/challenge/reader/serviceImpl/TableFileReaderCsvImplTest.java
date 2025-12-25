@@ -8,29 +8,26 @@ import de.exxcellent.challenge.reader.model.FileType;
 import de.exxcellent.challenge.reader.service.TableFileReader;
 import de.exxcellent.challenge.reader.service.TableFileReaderFactory;
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit-Test für die Klasse {@link TableFileReaderCsvImpl}.
+ * Unit-Test for the class {@link TableFileReaderCsvImpl}.
  */
-@SpringBootTest(classes = App.class)
+@SpringBootTest(classes = App.class, properties = "cli.autorun=false")
 class TableFileReaderCsvImplTest {
 
     @Autowired
     private TableFileReaderFactory tableFileReaderFactory;
-
-    @BeforeAll
-    static void setup() {
-        Locale.setDefault(Locale.ENGLISH);
-    }
 
     // ==================== Happy Path Tests ====================
 
@@ -39,7 +36,7 @@ class TableFileReaderCsvImplTest {
     @DisplayName("Should process records using stream()")
     void shouldProcessRecordsUsingStream() {
 
-        List<Weather> expected = TestDaten.createWeatherList();
+        List<Weather> expected = TestData.createWeatherList();
         String filePath = Objects.requireNonNull(getClass().getClassLoader()
                         .getResource("csv/weather-small.csv"))
                 .getPath();
@@ -60,7 +57,7 @@ class TableFileReaderCsvImplTest {
     @DisplayName("Should read records one by one using read")
     void shouldReadRecordsOneByOne() {
 
-        List<Weather> expected = TestDaten.createWeatherList();
+        List<Weather> expected = TestData.createWeatherList();
         String filePath = Objects.requireNonNull(getClass().getClassLoader()
                         .getResource("csv/weather-small.csv"))
                 .getPath();
@@ -85,7 +82,7 @@ class TableFileReaderCsvImplTest {
     @DisplayName("Should iterate using for-each loop")
     void shouldIterateUsingForEach() {
 
-        List<Weather> expected = TestDaten.createWeatherList();
+        List<Weather> expected = TestData.createWeatherList();
         List<Weather> actual = new ArrayList<>();
         String filePath = Objects.requireNonNull(getClass().getClassLoader()
                         .getResource("csv/weather-small.csv"))
@@ -131,7 +128,7 @@ class TableFileReaderCsvImplTest {
     @DisplayName("Should handle CSV with extra whitespace")
     void shouldHandleCsvWithExtraWhitespace() {
 
-        List<Weather> expected = TestDaten.createWeatherList();
+        List<Weather> expected = TestData.createWeatherList();
         String filePath = Objects.requireNonNull(getClass().getClassLoader()
                         .getResource("csv/weather-space.csv"))
                 .getPath();
@@ -152,7 +149,7 @@ class TableFileReaderCsvImplTest {
     @DisplayName("Should handle CSV with changed columns")
     void shouldHandleCsvWithChangedColumns() {
 
-        List<Weather> expected = TestDaten.createWeatherList();
+        List<Weather> expected = TestData.createWeatherList();
         String filePath = Objects.requireNonNull(getClass().getClassLoader()
                         .getResource("csv/weather-changecols.csv"))
                 .getPath();
@@ -197,7 +194,7 @@ class TableFileReaderCsvImplTest {
     @DisplayName("Should collect AppExceptions when row has type mismatch")
     void shouldCollectWhenTypeMismatch() {
 
-        List<Weather> expected = TestDaten.createWeatherList();
+        List<Weather> expected = TestData.createWeatherList();
         String filePath = Objects.requireNonNull(getClass().getClassLoader()
                         .getResource("csv/weather-mismatchrows.csv"))
                 .getPath();

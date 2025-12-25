@@ -18,9 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 /**
- * Unit-Test für die Klasse {@link WeatherAnalyserImpl}.
+ * Unit-Test for the class {@link WeatherAnalyserImpl}.
  */
-@SpringBootTest(classes = App.class)
+@SpringBootTest(classes = App.class, properties = "cli.autorun=false")
 class WeatherAnalyserImplTest {
 
     @Autowired
@@ -31,7 +31,7 @@ class WeatherAnalyserImplTest {
     @Test
     @DisplayName("Should return correct day with smallest temperature spread")
     void findDayOfSmallestTemperatureSpreadReturnsCorrectDay() {
-        Stream<Weather> weathers = TestDaten.createWeatherList().stream();
+        Stream<Weather> weathers = TestData.createWeatherList().stream();
         Set<Integer> expected = Set.of(2);
 
         Set<Integer> result = weatherAnalyser.findDayOfSmallestTemperatureSpread(weathers);
@@ -44,7 +44,7 @@ class WeatherAnalyserImplTest {
     @Test
     @DisplayName("Should return that day when only single record exists")
     void findDayOfSmallestTemperatureSpreadWithSingleRecordReturnsThatDay() {
-        Stream<Weather> weathers = TestDaten.createWeatherListWithSingleRecord().stream();
+        Stream<Weather> weathers = TestData.createWeatherListWithSingleRecord().stream();
         Set<Integer> expected = Set.of(2);
 
         Set<Integer> result = weatherAnalyser.findDayOfSmallestTemperatureSpread(weathers);
@@ -55,7 +55,7 @@ class WeatherAnalyserImplTest {
     @Test
     @DisplayName("Should return all days when multiple records have same smallest spread")
     void findDayOfSmallestTemperatureSpreadWithSameSpreadReturnsAllDays() {
-        Stream<Weather> weathers = TestDaten.createWeatherListWithMultipleSameSmallestTemperatureSpread().stream();
+        Stream<Weather> weathers = TestData.createWeatherListWithMultipleSameSmallestTemperatureSpread().stream();
         Set<Integer> expected = Set.of(2, 3);
 
         Set<Integer> result = weatherAnalyser.findDayOfSmallestTemperatureSpread(weathers);
@@ -79,7 +79,7 @@ class WeatherAnalyserImplTest {
     @Test
     @DisplayName("Should throw exception when min temperature exceeds max temperature")
     void findDayOfSmallestTemperatureSpreadWithMinExceedsMaxThrowsException() {
-        Stream<Weather> weathers = TestDaten.createWeatherListWithMnTExceedsMxT().stream();
+        Stream<Weather> weathers = TestData.createWeatherListWithMnTExceedsMxT().stream();
 
         AppException exception = assertThrows(AppException.class,
                 () -> weatherAnalyser.findDayOfSmallestTemperatureSpread(weathers));
@@ -90,7 +90,7 @@ class WeatherAnalyserImplTest {
     @Test
     @DisplayName("Should throw exception when duplicate day exists")
     void findDayOfSmallestTemperatureSpreadWithDuplicateDayThrowsException() {
-        Stream<Weather> weathers = TestDaten.createWeatherListWithDuplicatedDay().stream();
+        Stream<Weather> weathers = TestData.createWeatherListWithDuplicatedDay().stream();
 
         AppException exception = assertThrows(AppException.class,
                 () -> weatherAnalyser.findDayOfSmallestTemperatureSpread(weathers));

@@ -6,10 +6,10 @@ import lombok.experimental.UtilityClass;
 import java.util.List;
 
 /**
- * Testdaten für die Unit-Tests.
+ * Test data for the Unit-Tests.
  */
 @UtilityClass
-class TestDaten {
+class TestData {
     static List<Weather> createWeatherList() {
         return List.of(
                 new Weather(1, 88, 59, 74, 53.8, 0.0, 280, 9.6, 270, 17.0, 1.6, 93, 23, 1004.5),
