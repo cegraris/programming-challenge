@@ -1,6 +1,7 @@
 package de.exxcellent.challenge.cli;
 
 import de.exxcellent.challenge.exception.AppException;
+import de.exxcellent.challenge.reader.model.FootballCsv;
 import de.exxcellent.challenge.reader.model.WeatherCsv;
 import lombok.experimental.UtilityClass;
 
@@ -29,4 +30,13 @@ class TestData {
                 AppException.malformedRow(10, AppException.unexpected("test", null))
         );
     }
+
+    static List<FootballCsv> createFootballList() {
+        return List.of(
+                new FootballCsv("Arsenal", 38, 26, 9, 3, 79, 36, 87),
+                new FootballCsv("Liverpool", 38, 24, 8, 6, 67, 30, 80),
+                new FootballCsv("Manchester United", 38, 24, 5, 9, 87, 45, 77)
+        );
+    }
+    
 }

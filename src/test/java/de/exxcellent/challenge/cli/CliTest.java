@@ -1,9 +1,11 @@
 package de.exxcellent.challenge.cli;
 
 import de.exxcellent.challenge.App;
+import de.exxcellent.challenge.analyser.service.FootballAnalyser;
 import de.exxcellent.challenge.analyser.service.WeatherAnalyser;
 import de.exxcellent.challenge.exception.AppException;
 import de.exxcellent.challenge.reader.model.FileType;
+import de.exxcellent.challenge.reader.model.FootballCsv;
 import de.exxcellent.challenge.reader.model.WeatherCsv;
 import de.exxcellent.challenge.reader.service.TableFileReader;
 import de.exxcellent.challenge.reader.service.TableFileReaderFactory;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import picocli.CommandLine;
 
@@ -31,6 +34,7 @@ import static org.mockito.Mockito.when;
  * Unit-Test for the package {@link de.exxcellent.challenge.cli}.
  */
 @SpringBootTest(classes = App.class, properties = "cli.autorun=false")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class CliTest {
 
     @Autowired
@@ -44,6 +48,9 @@ class CliTest {
     @MockitoBean
     WeatherAnalyser weatherAnalyser;
 
+    @MockitoBean
+    FootballAnalyser footballAnalyser;
+
     @BeforeEach
     void beforeEach() {
         baos = new ByteArrayOutputStream();
@@ -56,7 +63,7 @@ class CliTest {
     @Test
     @SneakyThrows
     @DisplayName("Weather mode: prints smallest temperature spread day(s) and exits with 0")
-    void houldRunWeatherModeAndPrintResult() {
+    void shouldRunWeatherModeAndPrintResult() {
 
         @SuppressWarnings("unchecked")
         TableFileReader<WeatherCsv> reader = mock(TableFileReader.class);
@@ -73,6 +80,28 @@ class CliTest {
 
         assertThat(result.exitCode).isEqualTo(0);
         assertThat(result.output).contains("Smallest temperature spread day(s): [2]");
+    }
+
+    @Test
+    @SneakyThrows
+    @DisplayName("Football mode: prints team(s) with smallest absolute goal difference and exits with 0")
+    void shouldRunFootballModeAndPrintResult() {
+
+        @SuppressWarnings("unchecked")
+        TableFileReader<FootballCsv> reader = mock(TableFileReader.class);
+        when(tableFileReaderFactory.create(
+                any(),
+                eq(FileType.CSV),
+                eq(FootballCsv.class)
+        )).thenReturn(reader);
+        when(reader.stream()).thenReturn(TestData.createFootballList().stream());
+        when(reader.getFailedRowsExceptions()).thenReturn(List.of());
+        when(footballAnalyser.findTeamWithSmallestAbsGoalDifference(any())).thenReturn(Set.of("Arsenal"));
+
+        CliResult result = executeAndCapture("--football", "test.csv");
+
+        assertThat(result.exitCode).isEqualTo(0);
+        assertThat(result.output).contains("Team(s) with smallest absolute goal difference: [Arsenal]");
     }
 
     @Test

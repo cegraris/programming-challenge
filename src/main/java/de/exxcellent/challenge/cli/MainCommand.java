@@ -3,11 +3,15 @@ package de.exxcellent.challenge.cli;
 
 import de.exxcellent.challenge.analyser.model.AnalyserType;
 import de.exxcellent.challenge.analyser.service.AnalyserFactory;
+import de.exxcellent.challenge.analyser.service.FootballAnalyser;
 import de.exxcellent.challenge.analyser.service.WeatherAnalyser;
 import de.exxcellent.challenge.exception.AppException;
+import de.exxcellent.challenge.mapper.FootballMapper;
 import de.exxcellent.challenge.mapper.WeatherMapper;
+import de.exxcellent.challenge.model.Football;
 import de.exxcellent.challenge.model.Weather;
 import de.exxcellent.challenge.reader.model.FileType;
+import de.exxcellent.challenge.reader.model.FootballCsv;
 import de.exxcellent.challenge.reader.model.WeatherCsv;
 import de.exxcellent.challenge.reader.service.TableFileReader;
 import de.exxcellent.challenge.reader.service.TableFileReaderFactory;
@@ -38,6 +42,7 @@ public class MainCommand implements Callable<Integer> {
     private final TableFileReaderFactory tableFileReaderFactory;
     private final AnalyserFactory analyserFactory;
     private final WeatherMapper weatherMapper;
+    private final FootballMapper footballMapper;
     @Spec
     private CommandSpec spec;
     @Value("${logging.file.name}")
@@ -53,17 +58,29 @@ public class MainCommand implements Callable<Integer> {
     @CommandLine.Parameters(index = "0", description = "Input File Path")
     private Path inputFile;
 
-    public MainCommand(TableFileReaderFactory tableFileReaderFactory, AnalyserFactory analyserFactory, WeatherMapper weatherMapper) {
+    public MainCommand(TableFileReaderFactory tableFileReaderFactory, AnalyserFactory analyserFactory, WeatherMapper weatherMapper, FootballMapper footballMapper) {
         this.tableFileReaderFactory = tableFileReaderFactory;
         this.analyserFactory = analyserFactory;
         this.weatherMapper = weatherMapper;
+        this.footballMapper = footballMapper;
     }
 
     @Override
     public Integer call() {
         printBanner();
 
-        AnalyserType mode = AnalyserType.WEATHER;
+        AnalyserType mode;
+        if (modeOption == null) {
+            mode = AnalyserType.WEATHER;
+        } else {
+            if (modeOption.football) {
+                mode = AnalyserType.FOOTBALL;
+            } else if (modeOption.weather) {
+                mode = AnalyserType.WEATHER;
+            } else {
+                mode = AnalyserType.WEATHER;
+            }
+        }
 
         log.info("Mode: {}", mode);
         log.info("File: {}", inputFile.toAbsolutePath());
@@ -72,6 +89,7 @@ public class MainCommand implements Callable<Integer> {
 
         switch (mode) {
             case WEATHER -> handleWeather(analyserFactory.getWeatherAnalyser(), inputFile);
+            case FOOTBALL -> handleFootball(analyserFactory.getFootballAnalyser(), inputFile);
         }
 
         spec.commandLine().getOut().println(String.format("Log file: %s", logFileName));
@@ -103,6 +121,39 @@ public class MainCommand implements Callable<Integer> {
                     log.info("Weather Data Analysis Ended Successfully");
                     spec.commandLine().getOut().println();
                     printReport(String.format("Smallest temperature spread day(s): %s", days), failedRowsExceptions);
+                } catch (AppException e) {
+                    throw e;
+                } catch (Exception e) {
+                    throw AppException.unexpected(e.getMessage(), e);
+                }
+            }
+        }
+    }
+
+    /**
+     * Executes the football analysis workflow
+     *
+     * @param footballAnalyser analyser implementation for football data
+     * @param filePath         input file path
+     */
+    private void handleFootball(FootballAnalyser footballAnalyser, Path filePath) {
+        String path = filePath.toAbsolutePath().normalize().toString();
+        switch (format) {
+            case CSV -> {
+                try (TableFileReader<FootballCsv> reader = tableFileReaderFactory.create(
+                        path,
+                        FileType.CSV,
+                        FootballCsv.class
+                )) {
+                    Set<String> teams;
+                    try (Stream<Football> footballs = reader.stream().map(footballMapper::toDomain)) {
+                        teams = footballAnalyser.findTeamWithSmallestAbsGoalDifference(footballs);
+                    }
+                    List<AppException> failedRowsExceptions = reader.getFailedRowsExceptions();
+                    spec.commandLine().getOut().println("Football Data Analysis Ended Successfully");
+                    log.info("Football Data Analysis Ended Successfully");
+                    spec.commandLine().getOut().println();
+                    printReport(String.format("Team(s) with smallest absolute goal difference: %s", teams), failedRowsExceptions);
                 } catch (AppException e) {
                     throw e;
                 } catch (Exception e) {
