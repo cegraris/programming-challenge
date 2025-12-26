@@ -3,8 +3,8 @@ package de.exxcellent.challenge.cli;
 import de.exxcellent.challenge.App;
 import de.exxcellent.challenge.analyser.service.WeatherAnalyser;
 import de.exxcellent.challenge.exception.AppException;
-import de.exxcellent.challenge.model.Weather;
 import de.exxcellent.challenge.reader.model.FileType;
+import de.exxcellent.challenge.reader.model.WeatherCsv;
 import de.exxcellent.challenge.reader.service.TableFileReader;
 import de.exxcellent.challenge.reader.service.TableFileReaderFactory;
 import lombok.SneakyThrows;
@@ -59,11 +59,11 @@ class CliTest {
     void houldRunWeatherModeAndPrintResult() {
 
         @SuppressWarnings("unchecked")
-        TableFileReader<Weather> reader = mock(TableFileReader.class);
+        TableFileReader<WeatherCsv> reader = mock(TableFileReader.class);
         when(tableFileReaderFactory.create(
                 any(),
                 eq(FileType.CSV),
-                eq(Weather.class)
+                eq(WeatherCsv.class)
         )).thenReturn(reader);
         when(reader.stream()).thenReturn(TestData.createWeatherList().stream());
         when(reader.getFailedRowsExceptions()).thenReturn(List.of());
@@ -81,11 +81,11 @@ class CliTest {
     void shouldRunDefaultModeAndPrintResult() {
 
         @SuppressWarnings("unchecked")
-        TableFileReader<Weather> reader = mock(TableFileReader.class);
+        TableFileReader<WeatherCsv> reader = mock(TableFileReader.class);
         when(tableFileReaderFactory.create(
                 any(),
                 eq(FileType.CSV),
-                eq(Weather.class)
+                eq(WeatherCsv.class)
         )).thenReturn(reader);
         when(reader.stream()).thenReturn(TestData.createWeatherList().stream());
         when(reader.getFailedRowsExceptions()).thenReturn(List.of());
@@ -105,11 +105,11 @@ class CliTest {
     void shouldHandleCsvWithTypeMismatch() {
 
         @SuppressWarnings("unchecked")
-        TableFileReader<Weather> reader = mock(TableFileReader.class);
+        TableFileReader<WeatherCsv> reader = mock(TableFileReader.class);
         when(tableFileReaderFactory.create(
                 any(),
                 eq(FileType.CSV),
-                eq(Weather.class)
+                eq(WeatherCsv.class)
         )).thenReturn(reader);
         when(reader.stream()).thenReturn(TestData.createWeatherList().stream());
         when(reader.getFailedRowsExceptions()).thenReturn(TestData.createFailedRowsExceptions());
@@ -156,11 +156,11 @@ class CliTest {
     void shouldShowReaderThrownException() {
 
         @SuppressWarnings("unchecked")
-        TableFileReader<Weather> reader = mock(TableFileReader.class);
+        TableFileReader<WeatherCsv> reader = mock(TableFileReader.class);
         when(tableFileReaderFactory.create(
                 any(),
                 eq(FileType.CSV),
-                eq(Weather.class)
+                eq(WeatherCsv.class)
         )).thenReturn(reader);
         when(reader.stream()).thenThrow(AppException.fileNotFound("path_to_test.csv", null));
         when(reader.getFailedRowsExceptions()).thenReturn(List.of());
@@ -178,11 +178,11 @@ class CliTest {
     void shouldShowAnalyserThrownException() {
 
         @SuppressWarnings("unchecked")
-        TableFileReader<Weather> reader = mock(TableFileReader.class);
+        TableFileReader<WeatherCsv> reader = mock(TableFileReader.class);
         when(tableFileReaderFactory.create(
                 any(),
                 eq(FileType.CSV),
-                eq(Weather.class)
+                eq(WeatherCsv.class)
         )).thenReturn(reader);
         when(reader.stream()).thenReturn(TestData.createWeatherList().stream());
         when(reader.getFailedRowsExceptions()).thenReturn(List.of());

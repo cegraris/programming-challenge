@@ -3,8 +3,8 @@ package de.exxcellent.challenge.reader.serviceImpl;
 import de.exxcellent.challenge.App;
 import de.exxcellent.challenge.exception.AppException;
 import de.exxcellent.challenge.exception.ErrorCode;
-import de.exxcellent.challenge.model.Weather;
 import de.exxcellent.challenge.reader.model.FileType;
+import de.exxcellent.challenge.reader.model.WeatherCsv;
 import de.exxcellent.challenge.reader.service.TableFileReader;
 import de.exxcellent.challenge.reader.service.TableFileReaderFactory;
 import lombok.SneakyThrows;
@@ -36,17 +36,17 @@ class TableFileReaderCsvImplTest {
     @DisplayName("Should process records using stream()")
     void shouldProcessRecordsUsingStream() {
 
-        List<Weather> expected = TestData.createWeatherList();
+        List<WeatherCsv> expected = TestData.createWeatherList();
         String filePath = Objects.requireNonNull(getClass().getClassLoader()
                         .getResource("csv/weather-small.csv"))
                 .getPath();
 
-        try (TableFileReader<Weather> weatherReader = tableFileReaderFactory.create(
+        try (TableFileReader<WeatherCsv> weatherReader = tableFileReaderFactory.create(
                 filePath,
                 FileType.CSV,
-                Weather.class
+                WeatherCsv.class
         )) {
-            List<Weather> actual = weatherReader.stream().toList();
+            List<WeatherCsv> actual = weatherReader.stream().toList();
             assertEquals(4, actual.size());
             assertEquals(expected, actual);
         }
@@ -57,22 +57,22 @@ class TableFileReaderCsvImplTest {
     @DisplayName("Should read records one by one using read")
     void shouldReadRecordsOneByOne() {
 
-        List<Weather> expected = TestData.createWeatherList();
+        List<WeatherCsv> expected = TestData.createWeatherList();
         String filePath = Objects.requireNonNull(getClass().getClassLoader()
                         .getResource("csv/weather-small.csv"))
                 .getPath();
 
-        try (TableFileReader<Weather> weatherReader = tableFileReaderFactory.create(
+        try (TableFileReader<WeatherCsv> weatherReader = tableFileReaderFactory.create(
                 filePath,
                 FileType.CSV,
-                Weather.class
+                WeatherCsv.class
         )) {
             for (int i = 0; i < 4; i++) {
-                Optional<Weather> weather = weatherReader.read();
+                Optional<WeatherCsv> weather = weatherReader.read();
                 assertTrue(weather.isPresent());
                 assertEquals(expected.get(i), weather.get());
             }
-            Optional<Weather> tail = weatherReader.read();
+            Optional<WeatherCsv> tail = weatherReader.read();
             assertTrue(tail.isEmpty());
         }
     }
@@ -82,18 +82,18 @@ class TableFileReaderCsvImplTest {
     @DisplayName("Should iterate using for-each loop")
     void shouldIterateUsingForEach() {
 
-        List<Weather> expected = TestData.createWeatherList();
-        List<Weather> actual = new ArrayList<>();
+        List<WeatherCsv> expected = TestData.createWeatherList();
+        List<WeatherCsv> actual = new ArrayList<>();
         String filePath = Objects.requireNonNull(getClass().getClassLoader()
                         .getResource("csv/weather-small.csv"))
                 .getPath();
 
-        try (TableFileReader<Weather> weatherReader = tableFileReaderFactory.create(
+        try (TableFileReader<WeatherCsv> weatherReader = tableFileReaderFactory.create(
                 filePath,
                 FileType.CSV,
-                Weather.class
+                WeatherCsv.class
         )) {
-            for (Weather weather : weatherReader) {
+            for (WeatherCsv weather : weatherReader) {
                 actual.add(weather);
             }
 
@@ -112,12 +112,12 @@ class TableFileReaderCsvImplTest {
                         .getResource("csv/weather-empty.csv"))
                 .getPath();
 
-        try (TableFileReader<Weather> weatherReader = tableFileReaderFactory.create(
+        try (TableFileReader<WeatherCsv> weatherReader = tableFileReaderFactory.create(
                 filePath,
                 FileType.CSV,
-                Weather.class
+                WeatherCsv.class
         )) {
-            List<Weather> result = weatherReader.stream().toList();
+            List<WeatherCsv> result = weatherReader.stream().toList();
 
             assertTrue(result.isEmpty());
         }
@@ -128,17 +128,17 @@ class TableFileReaderCsvImplTest {
     @DisplayName("Should handle CSV with extra whitespace")
     void shouldHandleCsvWithExtraWhitespace() {
 
-        List<Weather> expected = TestData.createWeatherList();
+        List<WeatherCsv> expected = TestData.createWeatherList();
         String filePath = Objects.requireNonNull(getClass().getClassLoader()
                         .getResource("csv/weather-space.csv"))
                 .getPath();
 
-        try (TableFileReader<Weather> weatherReader = tableFileReaderFactory.create(
+        try (TableFileReader<WeatherCsv> weatherReader = tableFileReaderFactory.create(
                 filePath,
                 FileType.CSV,
-                Weather.class
+                WeatherCsv.class
         )) {
-            List<Weather> actual = weatherReader.stream().toList();
+            List<WeatherCsv> actual = weatherReader.stream().toList();
 
             assertEquals(expected, actual);
         }
@@ -149,17 +149,17 @@ class TableFileReaderCsvImplTest {
     @DisplayName("Should handle CSV with changed columns")
     void shouldHandleCsvWithChangedColumns() {
 
-        List<Weather> expected = TestData.createWeatherList();
+        List<WeatherCsv> expected = TestData.createWeatherList();
         String filePath = Objects.requireNonNull(getClass().getClassLoader()
                         .getResource("csv/weather-changecols.csv"))
                 .getPath();
 
-        try (TableFileReader<Weather> weatherReader = tableFileReaderFactory.create(
+        try (TableFileReader<WeatherCsv> weatherReader = tableFileReaderFactory.create(
                 filePath,
                 FileType.CSV,
-                Weather.class
+                WeatherCsv.class
         )) {
-            List<Weather> actual = weatherReader.stream().toList();
+            List<WeatherCsv> actual = weatherReader.stream().toList();
 
             assertEquals(expected, actual);
         }
@@ -177,10 +177,10 @@ class TableFileReaderCsvImplTest {
                 .getPath();
 
         AppException exception = assertThrows(AppException.class, () -> {
-            try (TableFileReader<Weather> reader = tableFileReaderFactory.create(
+            try (TableFileReader<WeatherCsv> reader = tableFileReaderFactory.create(
                     filePath,
                     FileType.CSV,
-                    Weather.class
+                    WeatherCsv.class
             )) {
                 reader.stream().toList();
             }
@@ -194,17 +194,17 @@ class TableFileReaderCsvImplTest {
     @DisplayName("Should collect AppExceptions when row has type mismatch")
     void shouldCollectWhenTypeMismatch() {
 
-        List<Weather> expected = TestData.createWeatherList();
+        List<WeatherCsv> expected = TestData.createWeatherList();
         String filePath = Objects.requireNonNull(getClass().getClassLoader()
                         .getResource("csv/weather-mismatchrows.csv"))
                 .getPath();
 
-        try (TableFileReader<Weather> weatherReader = tableFileReaderFactory.create(
+        try (TableFileReader<WeatherCsv> weatherReader = tableFileReaderFactory.create(
                 filePath,
                 FileType.CSV,
-                Weather.class
+                WeatherCsv.class
         )) {
-            List<Weather> actual = weatherReader.stream().toList();
+            List<WeatherCsv> actual = weatherReader.stream().toList();
             List<AppException> failedRowsExceptions = weatherReader.getFailedRowsExceptions();
 
             assertEquals(expected, actual);
@@ -223,10 +223,10 @@ class TableFileReaderCsvImplTest {
         String filePath = "csv/this-file-does-not-exist.csv";
 
         AppException exception = assertThrows(AppException.class, () -> {
-            try (TableFileReader<Weather> reader = tableFileReaderFactory.create(
+            try (TableFileReader<WeatherCsv> reader = tableFileReaderFactory.create(
                     filePath,
                     FileType.CSV,
-                    Weather.class
+                    WeatherCsv.class
             )) {
                 reader.stream().toList();
             }
@@ -245,10 +245,10 @@ class TableFileReaderCsvImplTest {
                 .getPath();
 
         AppException exception = assertThrows(AppException.class, () -> {
-            try (TableFileReader<Weather> reader = tableFileReaderFactory.create(
+            try (TableFileReader<WeatherCsv> reader = tableFileReaderFactory.create(
                     filePath,
                     FileType.CSV,
-                    Weather.class
+                    WeatherCsv.class
             )) {
                 reader.stream().toList();
             }
@@ -267,10 +267,10 @@ class TableFileReaderCsvImplTest {
                 .getPath();
 
         AppException exception = assertThrows(AppException.class, () -> {
-            try (TableFileReader<Weather> reader = tableFileReaderFactory.create(
+            try (TableFileReader<WeatherCsv> reader = tableFileReaderFactory.create(
                     filePath,
                     FileType.CSV,
-                    Weather.class
+                    WeatherCsv.class
             )) {
                 reader.stream().toList();
             }
@@ -289,10 +289,10 @@ class TableFileReaderCsvImplTest {
                 .getPath();
 
         AppException exception = assertThrows(AppException.class, () -> {
-            try (TableFileReader<Weather> reader = tableFileReaderFactory.create(
+            try (TableFileReader<WeatherCsv> reader = tableFileReaderFactory.create(
                     filePath,
                     FileType.CSV,
-                    Weather.class
+                    WeatherCsv.class
             )) {
                 reader.stream().toList();
             }

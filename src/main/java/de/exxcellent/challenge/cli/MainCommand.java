@@ -5,8 +5,10 @@ import de.exxcellent.challenge.analyser.model.AnalyserType;
 import de.exxcellent.challenge.analyser.service.AnalyserFactory;
 import de.exxcellent.challenge.analyser.service.WeatherAnalyser;
 import de.exxcellent.challenge.exception.AppException;
+import de.exxcellent.challenge.mapper.WeatherMapper;
 import de.exxcellent.challenge.model.Weather;
 import de.exxcellent.challenge.reader.model.FileType;
+import de.exxcellent.challenge.reader.model.WeatherCsv;
 import de.exxcellent.challenge.reader.service.TableFileReader;
 import de.exxcellent.challenge.reader.service.TableFileReaderFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,7 @@ public class MainCommand implements Callable<Integer> {
 
     private final TableFileReaderFactory tableFileReaderFactory;
     private final AnalyserFactory analyserFactory;
+    private final WeatherMapper weatherMapper;
     @Spec
     private CommandSpec spec;
     @Value("${logging.file.name}")
@@ -50,9 +53,10 @@ public class MainCommand implements Callable<Integer> {
     @CommandLine.Parameters(index = "0", description = "Input File Path")
     private Path inputFile;
 
-    public MainCommand(TableFileReaderFactory tableFileReaderFactory, AnalyserFactory analyserFactory) {
+    public MainCommand(TableFileReaderFactory tableFileReaderFactory, AnalyserFactory analyserFactory, WeatherMapper weatherMapper) {
         this.tableFileReaderFactory = tableFileReaderFactory;
         this.analyserFactory = analyserFactory;
+        this.weatherMapper = weatherMapper;
     }
 
     @Override
@@ -85,13 +89,13 @@ public class MainCommand implements Callable<Integer> {
         String path = filePath.toAbsolutePath().normalize().toString();
         switch (format) {
             case CSV -> {
-                try (TableFileReader<Weather> reader = tableFileReaderFactory.create(
+                try (TableFileReader<WeatherCsv> reader = tableFileReaderFactory.create(
                         path,
                         FileType.CSV,
-                        Weather.class
+                        WeatherCsv.class
                 )) {
                     Set<Integer> days;
-                    try (Stream<Weather> weathers = reader.stream()) {
+                    try (Stream<Weather> weathers = reader.stream().map(weatherMapper::toDomain)) {
                         days = weatherAnalyser.findDayOfSmallestTemperatureSpread(weathers);
                     }
                     List<AppException> failedRowsExceptions = reader.getFailedRowsExceptions();
