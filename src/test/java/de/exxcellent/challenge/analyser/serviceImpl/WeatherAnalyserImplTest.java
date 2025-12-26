@@ -1,9 +1,11 @@
 package de.exxcellent.challenge.analyser.serviceImpl;
 
 import de.exxcellent.challenge.App;
+import de.exxcellent.challenge.analyser.service.FootballAnalyser;
 import de.exxcellent.challenge.analyser.service.WeatherAnalyser;
 import de.exxcellent.challenge.exception.AppException;
 import de.exxcellent.challenge.exception.ErrorCode;
+import de.exxcellent.challenge.model.Football;
 import de.exxcellent.challenge.model.Weather;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +28,9 @@ class WeatherAnalyserImplTest {
     @Autowired
     private WeatherAnalyser weatherAnalyser;
 
+    @Autowired
+    private FootballAnalyser footballAnalyser;
+
     // ==================== Happy Path Tests ====================
 
     @Test
@@ -38,6 +43,18 @@ class WeatherAnalyserImplTest {
 
         assertEquals(expected, result);
     }
+
+    @Test
+    @DisplayName("Should return correct team with smallest absolute goal difference")
+    void findTeamWithSmallestAbsGoalDifferenceReturnsCorrectTeam() {
+        Stream<Football> footballs = TestData.createFootballList().stream();
+        Set<String> expected = Set.of("Liverpool");
+
+        Set<String> result = footballAnalyser.findTeamWithSmallestAbsGoalDifference(footballs);
+
+        assertEquals(expected, result);
+    }
+
 
     // ==================== Edge Cases ====================
 
@@ -59,6 +76,17 @@ class WeatherAnalyserImplTest {
         Set<Integer> expected = Set.of(2, 3);
 
         Set<Integer> result = weatherAnalyser.findDayOfSmallestTemperatureSpread(weathers);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    @DisplayName("Should return all correct teams with the same smallest absolute goal difference")
+    void findTeamsWithSameSmallestAbsGoalDifferenceReturnsCorrectTeam() {
+        Stream<Football> footballs = TestData.createFootballListWithSameSmallestAbsGoalDifference().stream();
+        Set<String> expected = Set.of("Liverpool", "Manchester United");
+
+        Set<String> result = footballAnalyser.findTeamWithSmallestAbsGoalDifference(footballs);
 
         assertEquals(expected, result);
     }
@@ -94,6 +122,17 @@ class WeatherAnalyserImplTest {
 
         AppException exception = assertThrows(AppException.class,
                 () -> weatherAnalyser.findDayOfSmallestTemperatureSpread(weathers));
+
+        assertEquals(ErrorCode.ANALYSIS_FAILED, exception.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("Should throw exception when duplicate Teams exists")
+    void findTeamWithSmallestAbsGoalDifferenceWithDuplicateTeamsThrowsException() {
+        Stream<Football> footballs = TestData.createFootballListWithDuplicatedTeamName().stream();
+
+        AppException exception = assertThrows(AppException.class,
+                () -> footballAnalyser.findTeamWithSmallestAbsGoalDifference(footballs));
 
         assertEquals(ErrorCode.ANALYSIS_FAILED, exception.getErrorCode());
     }

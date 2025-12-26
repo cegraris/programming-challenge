@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 /**
- * Analyser for weather data operations including validation and statistical analysis.
+ * Analyser for {@link Weather} data.
  */
 public interface WeatherAnalyser {
     /**

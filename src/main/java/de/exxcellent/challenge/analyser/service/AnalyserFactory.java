@@ -5,7 +5,12 @@ package de.exxcellent.challenge.analyser.service;
  */
 public interface AnalyserFactory {
     /**
-     * @return a {@link WeatherAnalyser} instance corresponding to the given type
+     * @return a {@link WeatherAnalyser} instance
      */
     WeatherAnalyser getWeatherAnalyser();
+
+    /**
+     * @return a {@link FootballAnalyser} instance
+     */
+    FootballAnalyser getFootballAnalyser();
 }
