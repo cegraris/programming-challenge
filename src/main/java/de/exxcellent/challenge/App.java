@@ -1,5 +1,6 @@
 package de.exxcellent.challenge;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.Locale;
@@ -19,13 +20,9 @@ public class App {
      */
     public static void main(String... args) {
 
-        // Your preparation code …
         Locale.setDefault(Locale.ENGLISH);
 
-        String dayWithSmallestTempSpread = "Someday";     // Your day analysis function call …
-        System.out.printf("Day with smallest temperature spread : %s%n", dayWithSmallestTempSpread);
-
-        String teamWithSmallestGoalSpread = "A good team"; // Your goal analysis function call …
-        System.out.printf("Team with smallest goal spread       : %s%n", teamWithSmallestGoalSpread);
+        int code = SpringApplication.exit(SpringApplication.run(App.class, args));
+        System.exit(code);
     }
 }
