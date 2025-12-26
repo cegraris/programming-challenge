@@ -4,6 +4,7 @@ import de.exxcellent.challenge.App;
 import de.exxcellent.challenge.exception.AppException;
 import de.exxcellent.challenge.exception.ErrorCode;
 import de.exxcellent.challenge.reader.model.FileType;
+import de.exxcellent.challenge.reader.model.FootballCsv;
 import de.exxcellent.challenge.reader.model.WeatherCsv;
 import de.exxcellent.challenge.reader.service.TableFileReader;
 import de.exxcellent.challenge.reader.service.TableFileReaderFactory;
@@ -97,6 +98,27 @@ class TableFileReaderCsvImplTest {
                 actual.add(weather);
             }
 
+            assertEquals(expected, actual);
+        }
+    }
+
+    @Test
+    @SneakyThrows
+    @DisplayName("Should process football records")
+    void shouldProcessFootballRecords() {
+
+        List<FootballCsv> expected = TestData.createFootballList();
+        String filePath = Objects.requireNonNull(getClass().getClassLoader()
+                        .getResource("csv/football-small.csv"))
+                .getPath();
+
+        try (TableFileReader<FootballCsv> footballReader = tableFileReaderFactory.create(
+                filePath,
+                FileType.CSV,
+                FootballCsv.class
+        )) {
+            List<FootballCsv> actual = footballReader.stream().toList();
+            assertEquals(3, actual.size());
             assertEquals(expected, actual);
         }
     }
