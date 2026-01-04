@@ -76,4 +76,12 @@ class TestData {
         );
     }
 
+    static List<Football> createFootballListWithGoalsSmallerThanZero() {
+        return List.of(
+                new Football("Arsenal", 38, 26, 9, 3, 79, -36, 87),
+                new Football("Liverpool", 38, 24, 8, 6, 67, 30, 80),
+                new Football("Manchester United", 38, 24, 5, 9, 50, 87, 77)
+        );
+    }
+
 }

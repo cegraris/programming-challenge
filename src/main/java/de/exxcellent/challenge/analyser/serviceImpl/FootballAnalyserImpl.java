@@ -54,6 +54,10 @@ public class FootballAnalyserImpl implements FootballAnalyser {
             throw AppException.analysisFailed(
                     String.format("Duplicate Team: %s", record.getTeam()));
         }
+        if (record.getGoalsAllowed() < 0 || record.getGoals() < 0) {
+            throw AppException.analysisFailed(
+                    String.format("Team-%s: both Goals and Goals Allowed must be greater than or equal to zero", record.getTeam()));
+        }
     }
 
 }

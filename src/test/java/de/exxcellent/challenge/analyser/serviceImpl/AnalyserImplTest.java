@@ -20,10 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 /**
- * Unit-Test for the class {@link WeatherAnalyserImpl}.
+ * Unit-Test for the class {@link WeatherAnalyserImpl} and {@link FootballAnalyserImpl}.
  */
 @SpringBootTest(classes = App.class, properties = "cli.autorun=false")
-class WeatherAnalyserImplTest {
+class AnalyserImplTest {
 
     @Autowired
     private WeatherAnalyser weatherAnalyser;
@@ -130,6 +130,17 @@ class WeatherAnalyserImplTest {
     @DisplayName("Should throw exception when duplicate Teams exists")
     void findTeamWithSmallestAbsGoalDifferenceWithDuplicateTeamsThrowsException() {
         Stream<Football> footballs = TestData.createFootballListWithDuplicatedTeamName().stream();
+
+        AppException exception = assertThrows(AppException.class,
+                () -> footballAnalyser.findTeamWithSmallestAbsGoalDifference(footballs));
+
+        assertEquals(ErrorCode.ANALYSIS_FAILED, exception.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("Should throw exception when goal or goals allowed smaller than zero")
+    void findTeamWithSmallestAbsGoalDifferenceWithGoalsSmallerThanZeroThrowsException() {
+        Stream<Football> footballs = TestData.createFootballListWithGoalsSmallerThanZero().stream();
 
         AppException exception = assertThrows(AppException.class,
                 () -> footballAnalyser.findTeamWithSmallestAbsGoalDifference(footballs));
