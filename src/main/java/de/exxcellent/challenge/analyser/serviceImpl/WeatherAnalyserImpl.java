@@ -48,19 +48,19 @@ public class WeatherAnalyserImpl implements WeatherAnalyser {
      *   <li>day is not duplicated in the dataset</li>
      * </ul>
      *
-     * @param w        the weather record to validate
+     * @param record        the weather record to validate
      * @param seenDays seenDays set of days already processed, used for duplicate detection
      * @throws AppException if validation fails
      */
-    private void validateWeather(Weather w, Set<Integer> seenDays) {
-        if (w.getMinTemperature() > w.getMaxTemperature()) {
+    private void validateWeather(Weather record, Set<Integer> seenDays) {
+        if (!seenDays.add(record.getDay())) {
+            throw AppException.analysisFailed(
+                    String.format("Duplicate day: %d", record.getDay()));
+        }
+        if (record.getMinTemperature() > record.getMaxTemperature()) {
             throw AppException.analysisFailed(
                     String.format("Day %d: min temperature (%d) exceeds max temperature (%d)",
-                            w.getDay(), w.getMinTemperature(), w.getMaxTemperature()));
-        }
-        if (!seenDays.add(w.getDay())) {
-            throw AppException.analysisFailed(
-                    String.format("Duplicate day: %d", w.getDay()));
+                            record.getDay(), record.getMinTemperature(), record.getMaxTemperature()));
         }
     }
 

@@ -27,14 +27,6 @@ public interface TableFileReader<T> extends AutoCloseable, Iterable<T> {
     Optional<T> read();
 
     /**
-     * Indicates whether one or more rows failed to be read or mapped
-     *
-     * @return {@code true} if any error occurred
-     * {@code false} otherwise
-     */
-    boolean hasFailedRowsExceptions();
-
-    /**
      * Get the List of {@link AppException}, which were thrown by parsing the mismatch rows.
      *
      * @return List of {@link AppException}

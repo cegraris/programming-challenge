@@ -2,6 +2,9 @@ package de.exxcellent.challenge.exception;
 
 import lombok.Getter;
 
+/**
+ * Unified application-level exception.
+ */
 @Getter
 public class AppException extends RuntimeException {
     private final ErrorCode errorCode;

@@ -47,22 +47,6 @@ public class TableFileReaderCsvImpl<T> implements TableFileReader<T> {
         this.iterator = csvToBean.iterator();
     }
 
-    /**
-     * Extracts required header names from the target class by inspecting.
-     *
-     * @param clazz the target class to inspect
-     * @return set of required column names, may be empty if none are required
-     */
-    private static Set<String> getRequiredHeadersFromClass(Class<?> clazz) {
-        return Arrays.stream(clazz.getDeclaredFields())
-                .filter(f -> f.isAnnotationPresent(CsvBindByName.class))
-                .map(f -> f.getAnnotation(CsvBindByName.class))
-                .filter(CsvBindByName::required)
-                .map(CsvBindByName::column)
-                .filter(col -> !col.isEmpty())
-                .collect(Collectors.toSet());
-    }
-
     @Override
     public Optional<T> read() {
         if (iterator.hasNext()) {
@@ -70,11 +54,6 @@ public class TableFileReaderCsvImpl<T> implements TableFileReader<T> {
             return Optional.of(record);
         }
         return Optional.empty();
-    }
-
-    @Override
-    public boolean hasFailedRowsExceptions() {
-        return !csvToBean.getCapturedExceptions().isEmpty();
     }
 
     @Override
@@ -94,6 +73,22 @@ public class TableFileReaderCsvImpl<T> implements TableFileReader<T> {
         } catch (IOException e) {
             throw AppException.fileCloseFailure(e);
         }
+    }
+
+    /**
+     * Extracts required header names from the target class by inspecting.
+     *
+     * @param clazz the target class to inspect
+     * @return set of required column names, may be empty if none are required
+     */
+    private static Set<String> getRequiredHeadersFromClass(Class<?> clazz) {
+        return Arrays.stream(clazz.getDeclaredFields())
+                .filter(f -> f.isAnnotationPresent(CsvBindByName.class))
+                .map(f -> f.getAnnotation(CsvBindByName.class))
+                .filter(CsvBindByName::required)
+                .map(CsvBindByName::column)
+                .filter(col -> !col.isEmpty())
+                .collect(Collectors.toSet());
     }
 
     /**
