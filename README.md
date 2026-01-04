@@ -7,6 +7,24 @@ The solution of eXXcellent programming challenge - Weatherdata
 This repository provides one possible solution
 of  [coding challenge (Weatherdata) from eXXcellent](https://github.com/exxcellent/programming-challenge/tree/challenge-weatherdata).
 
+# Implementation characteristics (assumptions)
+
+1. Currently, only CSV input is supported, and the program validates whether the file is a proper CSV.
+
+2. Some columns are considered mandatory, while others are optional. Further processing will only continue if all
+   required columns are present in the header.
+   - In Weather mode, the required columns are Day, MxT, and MnT.
+   - In Football mode, the required columns are Team, Goals, and Goals Allowed.
+
+3. When reading data rows, any row that cannot be parsed will be skipped. They will be reported.
+
+4. For the current analysis logic, an empty result is considered an error.
+
+5. The program validates several obvious constraints within the table:
+   - In Weather mode, the day values must be unique, and MxT must be greater than or equal to MnT.
+   - In Football mode, team names must be unique, and both Goals and Goals Allowed must be greater than or equal to
+     zero.
+
 # Requirements
 
 - Java 17 or above
@@ -66,6 +84,8 @@ Analyze football data:
 java -jar target/challenge-1.1-SNAPSHOT.jar --football target\classes\de\exxcellent\challenge\football.csv
 ```
 
-# Project Structure
+# UML
 
-# Testing
+The diagram below shows the UML diagram for the core classes (constructors are not listed).
+![UML](/UML.jpg "UML Diagram of core classes")
+
