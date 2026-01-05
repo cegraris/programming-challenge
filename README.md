@@ -35,7 +35,7 @@ of  [coding challenge (Weatherdata) from eXXcellent](https://github.com/exxcelle
 
 ```bash
 # Clone the repository
-git clone git@github.com:cegraris/programming-challenge.git
+git clone https://github.com/cegraris/programming-challenge.git
 cd programming-challenge
 git switch challenge-weatherdata-jwu
 
@@ -68,20 +68,23 @@ Where:
 
 ### Examples
 
+(The following examples use Linux-style file path formats. If you are using Windows, please remember to convert the
+slash characters accordingly.)
+
 Analyze weather data:
 
 ```bash
-java -jar target/challenge-1.1-SNAPSHOT.jar --weather target\classes\de\exxcellent\challenge\weather.csv
+java -jar target/challenge-1.1-SNAPSHOT.jar --weather target/classes/de/exxcellent/challenge/weather.csv
 or
-java -jar target/challenge-1.1-SNAPSHOT.jar target\classes\de\exxcellent\challenge\weather.csv
+java -jar target/challenge-1.1-SNAPSHOT.jar target/classes/de/exxcellent/challenge/weather.csv
 or
-java -jar target/challenge-1.1-SNAPSHOT.jar --weather target\classes\de\exxcellent\challenge\weather.csv -f CSV
+java -jar target/challenge-1.1-SNAPSHOT.jar --weather target/classes/de/exxcellent/challenge/weather.csv -f CSV
 ```
 
 Analyze football data:
 
 ```bash
-java -jar target/challenge-1.1-SNAPSHOT.jar --football target\classes\de\exxcellent\challenge\football.csv
+java -jar target/challenge-1.1-SNAPSHOT.jar --football target/classes/de/exxcellent/challenge/football.csv
 ```
 
 # UML
