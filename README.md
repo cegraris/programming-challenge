@@ -25,6 +25,9 @@ of  [coding challenge (Weatherdata) from eXXcellent](https://github.com/exxcelle
    - In Football mode, team names must be unique, and both Goals and Goals Allowed must be greater than or equal to
      zero.
 
+6. When there are multiple results—for example, multiple records that share the same minimum value, all of them are
+   considered correct results.
+
 # Requirements
 
 - Java 17 or above
